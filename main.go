@@ -2,18 +2,23 @@ package main
 
 import (
 	"encoding/json"
-	"io/ioutil"
-	"log"
+	"fmt"
+	"os"
+
+	"github.com/bwmarrin/discordgo"
 )
 
 type Config struct {
 	BotToken string `json:"bot_token"`
-	APIURL string `json:"api_url"`
-	APIKey string `json:"api_key"`
+	GuildID  string `json:"guild_id"`
+	APIURL   string `json:"api_url"`
+	APIKey   string `json:"api_key"`
 }
 
+var s *discordgo.Session
+
 func loadConfig() (*Config, error) {
-	data, err := ioutil.ReadFile("config.json")
+	data, err := os.ReadFile("config.json")
 	if err != nil {
 		return nil, err
 	}
@@ -29,7 +34,10 @@ func loadConfig() (*Config, error) {
 
 func main() {
 	config, err := loadConfig()
+	s, err := discordgo.New("Bot " + config.BotToken)
 	if err != nil {
-		log.Fatal("Failed to load config:", err)
+		fmt.Println("error creating Discord session,", err)
+		return
 	}
+
 }
